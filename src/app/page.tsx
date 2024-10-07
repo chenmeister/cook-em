@@ -1,95 +1,65 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import { ChangeEvent, useState } from "react";
+
+interface GeneratedRecipe {
+  title: string;
+  picture: string;
+  ingredients: string[];
+  directions: string[];
+}
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
+  const [ingredients, setIngredients] = useState<string>('');
+  const [recipe, setRecipe] = useState<GeneratedRecipe | undefined>(undefined);
+
+  const handleIngredients = (event: ChangeEvent<HTMLInputElement>) => {
+    setIngredients(event.target.value);
+  }
+
+  const createARecipe = () => {
+    console.log(`Create a recipe with the following ingredients: ${ingredients}
+      Return Data in JSON with the following information:
+      {
+        title: <title_here>,
+        picture: <link to picture here>
+        ingredients: [place ingredients here]
+        directions: [place step by step directions here]
+      }
+      `);
+      setRecipe({
+        title: 'Test',
+        picture: 'image here',
+        ingredients: ['broccoli', 'potatoes', 'steak'],
+        directions: ['cook broccoli', 'cook potatoes', 'cook steak']
+      })
+  }
+
+  return (
+    <div className="container">
+      <div>
+        <h1>What do we have in the fridge?</h1>
+        <input 
+          type="text" 
+          value={ingredients} 
+          onChange={handleIngredients}
+          placeholder="separate by commas ','"/>
+        <button onClick={createARecipe}>Cook Something Up</button>
+      </div>
+      { recipe &&
+        <div>
+          {/** Only show recipe here once its loaded */}
+          <h1>{recipe.title}</h1>
+          {/** Picture here */}
+          <h2>Ingredients</h2>
+          <ul>
+            { recipe.ingredients.map((ing, index) => <li key={index}>{ing}</li>) }
+          </ul>
+          <h2>Cooking Directions</h2>
+          <ol>
+            { recipe.directions.map((dir, index) => <li key={index}>{dir}</li>)}
+          </ol>
         </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      }
     </div>
   );
 }
